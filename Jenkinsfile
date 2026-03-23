@@ -33,6 +33,13 @@ pipeline {
             }
         }
 
+         stage('Git Pull') {
+            steps {
+                echo 'Pulling latest changes from GitHub...'
+                sh 'git pull origin main'
+            }
+        }
+        
         stage('Run Python Script') {
             steps {
                 echo 'Executing Python file...'
