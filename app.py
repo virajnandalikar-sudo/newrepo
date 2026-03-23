@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "<h1>🚀 Hello, this is your UI!</h1><p>Welcome to the app running in your browser.</p>"
+    return "<h1>Hello, this is your UI!</h1><p>Welcome to the app running in your browser.</p>"
 
 if __name__ == "__main__":
     # Run on localhost:5000
