@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        /* stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/virajnandalikar-sudo/newrepo.git'
             }
@@ -35,7 +35,16 @@ pipeline {
         sh 'nohup ./venv/bin/python app.py > app.log 2>&1 &'
         echo "App started — check http://<your-server-ip>:5000"
     }
-}
+} */
+        stage('Serve UI') {
+            steps {
+                sh 'python3 app.py'
+                echo 'Flask UI is now available'
+            }}
+        stage('Archive Logs') {
+            steps {
+                archiveArtifacts artifacts: 'flask.log', fingerprint: true
+            }}
 
     }
 
