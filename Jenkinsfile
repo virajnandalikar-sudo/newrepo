@@ -4,63 +4,37 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out source code from GitHub...'
-                checkout([$class: 'GitSCM',
-                          branches: [[name: '*/main']],
-                          userRemoteConfigs: [[url: 'https://github.com/virajnandalikar-sudo/newrepo.git']]
-                ])
+                git branch: 'main', url: 'https://github.com/virajnandalikar-sudo/newrepo.git'
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Building project...'
-                sh 'echo "Simulating build process"'
+                sh 'python3 -m venv venv'
+                sh './venv/bin/pip install -r requirements.txt'
             }
         }
 
-        stage('Lint') {
+        stage('Run Tests') {
             steps {
-                echo 'Running lint checks...'
-                sh 'echo "Simulating linting process"'
+                sh './venv/bin/python -m unittest discover tests'
             }
         }
 
-        stage('Test') {
+        stage('Run Web Application') {
             steps {
-                echo 'Running tests...'
-                sh 'echo "Simulating test execution"'
-            }
-        }
-
-         stage('Git Pull') {
-            steps {
-                echo 'Pulling latest changes from GitHub...'
-                sh 'git pull origin main'
-            }
-        }
-        
-        stage('Run Python Script') {
-            steps {
-                echo 'Executing Python file...'
-                sh 'python3 script.py'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-                sh 'echo "Simulating deployment"'
-            }
-        }
-
-        stage('Notify') {
-            steps {
-                echo 'Sending out notification message...'
-                echo 'Pipeline completed successfully!'
+                sh './venv/bin/python app.py &'
+                echo "App started — visit http://localhost:5000"
             }
         }
     }
+
+    post {
+        always {
+            echo 'Pipeline finished!'
+        }
+    }
 }
+
 
 
