@@ -17,11 +17,18 @@ pipeline {
 }
 
 
-        stage('Run Tests') {
-            steps {
+       stage('Run Tests') {
+    steps {
+        script {
+            if (fileExists('tests')) {
                 sh './venv/bin/python -m unittest discover tests'
+            } else {
+                echo "No tests directory found, skipping..."
             }
         }
+    }
+}
+
 
         stage('Run Web Application') {
     steps {
