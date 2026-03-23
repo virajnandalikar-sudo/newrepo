@@ -4,14 +4,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
-                checkout scm
+                echo 'Checking out source code from GitHub...'
+                checkout([$class: 'GitSCM',
+                          branches: [[name: '*/main']],
+                          userRemoteConfigs: [[url: 'https://github.com/virajnandalikar-sudo/newrepo.git']]
+                ])
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the project...'
+                echo 'Building project...'
                 sh 'echo "Simulating build process"'
             }
         }
@@ -30,10 +33,10 @@ pipeline {
             }
         }
 
-        stage('Package') {
+        stage('Run Python Script') {
             steps {
-                echo 'Packaging artifacts...'
-                sh 'echo "Simulating packaging step"'
+                echo 'Executing Python file...'
+                sh 'python3 script.py'
             }
         }
 
@@ -47,11 +50,7 @@ pipeline {
         stage('Notify') {
             steps {
                 echo 'Sending out notification message...'
-                // Example: Slack notification (requires Slack plugin configured)
-                // slackSend(channel: '#builds', message: "Build pipeline completed successfully!")
-                
-                // For simplicity, just echoing a message here
-                echo 'Build pipeline completed successfully!'
+                echo 'Pipeline completed successfully!'
             }
         }
     }
