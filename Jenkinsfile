@@ -38,7 +38,7 @@ pipeline {
 } */
         stage('Serve UI') {
             steps {
-                sh 'nohup python3 app.py > flask.log 2>&1 &'
+                sh 'python3 app.py'
                 echo 'Flask UI is now available'
             }}
         stage('Archive Logs') {
