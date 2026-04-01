@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+         HEAD
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/virajnandalikar-sudo/newrepo.git'
@@ -27,10 +28,10 @@ pipeline {
                 }
             }
         }
-
+          ba98341164eccc41b9b1d49b9408c9a7aec24191
         stage('Serve UI') {
             steps {
-                sh 'nohup python3 app.py > flask.log 2>&1 &'
+                sh 'python3 app.py'
                 echo 'Flask UI is now available'
             }
         }
