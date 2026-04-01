@@ -1,48 +1,61 @@
 pipeline {
     agent any
- environment {
-        SONARQUBE_ENV = 'MySonarQube'
+
+    environment {
+        SONARQUBE = 'MySonarQube'  // Must match the name of your SonarQube server configured in Jenkins (Manage Jenkins → Configure System)
     }
+
     stages {
         stage('Checkout') {
             steps {
+                // Clone your repository
                 git branch: 'main', url: 'https://github.com/virajnandalikar-sudo/newrepo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Run Python file to verify execution
+                sh 'python3 app.py'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('MySonarQube') {
-                        sh '''
-                            sonar-scanner \
+                    withSonarQubeEnv("${SONARQUBE}") {
+                        // Use the scanner tool configured in Jenkins Global Tool Configuration
+                        sh "${tool 'SonarQubeScanner'}/bin/sonar-scanner \
                             -Dsonar.projectKey=newrepo \
+                            -Dsonar.projectName=newrepo \
                             -Dsonar.sources=. \
-                            -Dsonar.host.url=http://your-sonarqube-server:9000 \
-                            -Dsonar.login=$SONAR_AUTH_TOKEN
-                        '''
+                            -Dsonar.python.version=3"
                     }
                 }
             }
         }
 
-        stage('Serve UI') {
+        stage('Quality Gate') {
             steps {
-                sh 'nohup python3 app.py > flask.log 2>&1 &'
-                echo 'Flask UI is now available'
-            }
-        }
-
-        stage('Archive Logs') {
-            steps {
-                archiveArtifacts artifacts: 'flask.log', fingerprint: true
+                script {
+                    // Wait for SonarQube quality gate result
+                    timeout(time: 20, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline finished!'
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Build and analysis completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check logs.'
         }
     }
 }
