@@ -25,6 +25,7 @@ pipeline {
                 script {
                     withSonarQubeEnv("${SONARQUBE}") {
                         // Use the scanner tool configured in Jenkins Global Tool Configuration
+			 withCredentials([string(credentialsId: 'SONAR_AUTH_TOKEN', variable: 'SONAR_AUTH_TOKEN')]) {
                         sh "${tool 'SonarQubeScanner'}/bin/sonar-scanner \
                             -Dsonar.projectKey=newrepo \
                             -Dsonar.projectName=newrepo \
@@ -34,6 +35,7 @@ pipeline {
                 }
             }
         }
+}
 
         stage('Quality Gate') {
             steps {
