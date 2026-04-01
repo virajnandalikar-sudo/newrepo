@@ -1,5 +1,11 @@
 pipeline {
     agent any
+tools{
+sonarScanner 'SonarQubeScanner'
+}
+ environment {
+        SONARQUBE_ENV = 'MySonarQube'
+    }
     stages {
         stage('Checkout') {
             steps {
