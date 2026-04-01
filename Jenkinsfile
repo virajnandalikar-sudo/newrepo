@@ -16,7 +16,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Run Python file to verify execution
-                sh 'python3 app.py'
+                sh 'python3 p1.py'
             }
         }
 
