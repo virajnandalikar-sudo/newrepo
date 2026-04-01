@@ -1,8 +1,5 @@
 pipeline {
     agent any
-tools{
-SonarRunnerInstallation 'SonarQubeScanner'
-}
  environment {
         SONARQUBE_ENV = 'MySonarQube'
     }
