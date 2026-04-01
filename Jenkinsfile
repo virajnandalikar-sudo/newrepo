@@ -1,12 +1,6 @@
 pipeline {
     agent any
-
-    environment {
-        SONARQUBE_ENV = 'MySonarQube' // Name configured in Jenkins
-    }
-
     stages {
-         HEAD
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/virajnandalikar-sudo/newrepo.git'
@@ -16,7 +10,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    withSonarQubeEnv('MySonarQube') {
                         sh '''
                             sonar-scanner \
                             -Dsonar.projectKey=newrepo \
@@ -28,10 +22,10 @@ pipeline {
                 }
             }
         }
-          ba98341164eccc41b9b1d49b9408c9a7aec24191
+
         stage('Serve UI') {
             steps {
-                sh 'python3 app.py'
+                sh 'nohup python3 app.py > flask.log 2>&1 &'
                 echo 'Flask UI is now available'
             }
         }
