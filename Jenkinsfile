@@ -26,11 +26,14 @@ pipeline {
                     withSonarQubeEnv("${SONARQUBE}") {
                         // Use the scanner tool configured in Jenkins Global Tool Configuration
 			 withCredentials([string(credentialsId: 'SONAR_AUTH_TOKEN', variable: 'SONAR_AUTH_TOKEN')]) {
-                        sh "${tool 'SonarQubeScanner'}/bin/sonar-scanner \
+                        sh """
+			    ${tool 'SonarQubeScanner'}/bin/sonar-scanner \
                             -Dsonar.projectKey=newrepo \
                             -Dsonar.projectName=newrepo \
                             -Dsonar.sources=. \
-                            -Dsonar.python.version=3"
+                            -Dsonar.python.version=3 \
+		            -Dsonar.login=$SONAR_AUTH_TOKEN
+			"""
                     }
                 }
             }
